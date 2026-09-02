@@ -1,4 +1,9 @@
-
-
-- Use PaddleOCR / Train AI
-- Switch between landscape and horizontal layout
+Todo:
+- Save the templates in the user's local folder.
+- Update the templates
+- Put the backend into another thread so that the UI doesn't freeze.
+- Instead of waiting for the HTTP server to open to open the UI, open the UI immediately, then show a loading screen, then the UI can load when the HTTP server is open.
+- Close all tabs and reload BDFD when it freezes or go to a different app.
+- Add the toggle option to do the reload BDFD feature.
+- Add the position for the user's bot so that the app knows which bot to click when it reloads BDFD.
+- Adapt the new success screen

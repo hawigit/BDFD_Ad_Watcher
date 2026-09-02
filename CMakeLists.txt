@@ -28,7 +28,8 @@ qt_add_qml_module(appBDFDAdW
     SOURCES
         backend.h
         backend.cpp
-        SOURCES
+        AdLoop.h
+        AdLoop.cpp
 )
 
 # 3. LINK LIBRARIES
