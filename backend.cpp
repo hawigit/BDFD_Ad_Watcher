@@ -40,7 +40,9 @@ backend::backend(QObject *parent)
 
     connect(ocrProcess, &QProcess::readyReadStandardError, this, [this]() {
         QString err = QString::fromUtf8(ocrProcess->readAllStandardError()).trimmed();
-        if (!err.isEmpty()) log("OCR Error: " + err);
+        if (!err.isEmpty() && !err.contains("UserWarning") && !err.contains("Using CPU")) {
+            log("OCR Error: " + err);
+        }
     });
 
     connect(ocrProcess, &QProcess::errorOccurred, this, [this](QProcess::ProcessError) {
@@ -99,6 +101,10 @@ void backend::onScreenUpdated(QString path) {
 }
 
 void backend::captureScreen() {
+    QString localDir = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+    QDir().mkpath(localDir);
+    QString localScreenshot = localDir + "/screenshot.png";
+
     QProcess process;
     setupAdbEnvironment(process);
     QStringList args;
@@ -109,14 +115,14 @@ void backend::captureScreen() {
     QProcess pullProcess;
     setupAdbEnvironment(pullProcess);
     QStringList pullArgs;
-    pullArgs << "-s" << adbPortAddress << "pull" << "/sdcard/screenshot.png" << "screenshot.png";
+    pullArgs << "-s" << adbPortAddress << "pull" << "/sdcard/screenshot.png" << localScreenshot;
     pullProcess.start(adbPath, pullArgs);
     pullProcess.waitForFinished();
 
     QImage img;
-    if (img.load("screenshot.png")) {
+    if (img.load(localScreenshot)) {
         screenImg = img;
-        imgPath = "file:///" + QDir::currentPath() + "/screenshot.png?r=" + QString::number(QDateTime::currentMSecsSinceEpoch());
+        imgPath = "file:///" + localScreenshot + "?r=" + QString::number(QDateTime::currentMSecsSinceEpoch());
         emit imgPathChanged();
     } else {
         log("Failed to decode bluestacks screen image");

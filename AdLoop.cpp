@@ -5,6 +5,7 @@
 #include <QThread>
 #include <QProcessEnvironment>
 #include <QDebug>
+#include <QUrl>
 
 AdLoop::AdLoop(QObject *parent)
     : QObject{parent}
@@ -60,6 +61,10 @@ void AdLoop::setupAdbEnvironment(QProcess &process) {
 }
 
 void AdLoop::captureScreen() {
+    QString localDir = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+    QDir().mkpath(localDir);
+    QString localScreenshot = localDir + "/screenshot.png";
+
     QProcess process;
     setupAdbEnvironment(process);
     QStringList args;
@@ -70,14 +75,14 @@ void AdLoop::captureScreen() {
     QProcess pullProcess;
     setupAdbEnvironment(pullProcess);
     QStringList pullArgs;
-    pullArgs << "-s" << adbPortAddress << "pull" << "/sdcard/screenshot.png" << "screenshot.png";
+    pullArgs << "-s" << adbPortAddress << "pull" << "/sdcard/screenshot.png" << localScreenshot;
     pullProcess.start(adbPath, pullArgs);
     pullProcess.waitForFinished();
 
     QImage img;
-    if (img.load("screenshot.png")) {
+    if (img.load(localScreenshot)) {
         screenImg = img;
-        QString path = "file:///" + QDir::currentPath() + "/screenshot.png?r=" + QString::number(QDateTime::currentMSecsSinceEpoch());
+        QString path = "file:///" + localScreenshot + "?r=" + QString::number(QDateTime::currentMSecsSinceEpoch());
         emit screenUpdated(path);
     } else {
         emit logMessage("Failed to decode bluestacks screen image");
@@ -96,7 +101,7 @@ void AdLoop::tap(int x, int y) {
 QString AdLoop::solveCaptcha(QString imagePath) {
     if (imagePath.startsWith("file:///")) imagePath = imagePath.remove(0, 8);
     imagePath = QDir::toNativeSeparators(imagePath);
-    QString encoded = imagePath.replace("\\", "%5C");
+    QString encoded = QString::fromUtf8(QUrl::toPercentEncoding(imagePath));
 
     QProcess process;
     process.start("curl", QStringList() << "-s" << ("http://localhost:9119/?path=" + encoded));
@@ -187,8 +192,11 @@ void AdLoop::loop() {
         emit logMessage("state 1: captcha");
         QRect captchaRec = QRect(captchaCorner1, captchaCorner2).normalized();
         QImage captchaImg = screenImg.copy(captchaRec);
-        captchaImg.save("temp_captcha.png");
-        QString code = solveCaptcha(QDir::currentPath() + "/temp_captcha.png");
+        QString localDir = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+        QDir().mkpath(localDir);
+        QString tempCaptcha = localDir + "/temp_captcha.png";
+        captchaImg.save(tempCaptcha);
+        QString code = solveCaptcha(tempCaptcha);
         if (code.length() == 5) {
             tap(captchaTextbox.x(), captchaTextbox.y());
             emit logMessage("Tapped at captchaTextbox");
