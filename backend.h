@@ -20,6 +20,7 @@ class backend : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString imgPath READ getImgPath NOTIFY imgPathChanged)
     Q_PROPERTY(QString adbPort READ getAdbPort WRITE updatePort NOTIFY adbPortChanged)
+    Q_PROPERTY(bool isReady READ isReady NOTIFY isReadyChanged)
 public:
     explicit backend(QObject *parent = nullptr);
     ~backend();
@@ -35,6 +36,9 @@ public:
     }
     QString getAdbPort() {
         return adbPortAddress;
+    }
+    bool isReady() const {
+        return m_isReady;
     }
     bool isColorSimilar(QColor firstColor, QColor secondColor, int acceptedRange);
 
@@ -55,6 +59,7 @@ signals:
     void logUpdated(QString message);
     void imgPathChanged();
     void adbPortChanged();
+    void isReadyChanged();
 
     void requestStart();
     void requestStop();
@@ -63,6 +68,7 @@ signals:
                          QString port, QString adbExecutablePath);
 
 private:
+    void initializeTemplates();
     void saveSettings();
     void loadSettings();
     void setupAdbEnvironment(QProcess &process);
@@ -72,13 +78,13 @@ private:
     AdLoop *adLoop = nullptr;
 
     QProcess *ocrProcess = nullptr;
+    bool m_isReady = false;
     QString adbPortAddress = "127.0.0.1:5555";
     QString adbPath;
     QString imgPath;
     QImage screenImg;
     int adbConnected = 0;
 
-    // Coordinates
     QPoint XButton1 = QPoint(857, 49);
     QPoint XButton1_left = QPoint(53, 49);
     QPoint XButton2 = QPoint(856, 388);

@@ -10,8 +10,7 @@ backend::backend(QObject *parent)
 {
     loadSettings();
     adbPath = QDir::currentPath() + "/adb.exe";
-
-    // Setup worker thread
+    initializeTemplates();
     loopThread = new QThread(this);
     adLoop = new AdLoop();
     adLoop->moveToThread(loopThread);
@@ -26,13 +25,33 @@ backend::backend(QObject *parent)
     loopThread->start();
     sendSettingsToWorker();
 
-    // Start OCR server
     QString pythonPath = QDir::currentPath() + "/ocr_env/Scripts/python.exe";
     QString scriptPath = QDir::currentPath() + "/ocr.py";
     ocrProcess = new QProcess(this);
+
+    connect(ocrProcess, &QProcess::readyReadStandardOutput, this, [this]() {
+        QString out = QString::fromUtf8(ocrProcess->readAllStandardOutput()).trimmed();
+        if (!out.isEmpty()) log(out);
+        if (!m_isReady) {
+            m_isReady = true;
+            emit isReadyChanged();
+        }
+    });
+
+    connect(ocrProcess, &QProcess::readyReadStandardError, this, [this]() {
+        QString err = QString::fromUtf8(ocrProcess->readAllStandardError()).trimmed();
+        if (!err.isEmpty()) log("OCR Error: " + err);
+    });
+
+    connect(ocrProcess, &QProcess::errorOccurred, this, [this](QProcess::ProcessError) {
+        log(QString("OCR process error: %1").arg(ocrProcess->errorString()));
+        if (!m_isReady) {
+            m_isReady = true;
+            emit isReadyChanged();
+        }
+    });
+
     ocrProcess->start(pythonPath, QStringList() << scriptPath);
-    ocrProcess->waitForReadyRead(15000); // wait until "OCR server ready"
-    log("OCR server started");
 }
 
 backend::~backend() {
@@ -248,7 +267,8 @@ void backend::log(QString text) {
 
 void backend::captureWidget(QString widgetName) {
     QRect rectangle = QRect(captureWidget1, captureWidget2).normalized();
-    QDir directory = QDir("./templates");
+    QString dirPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/templates";
+    QDir directory(dirPath);
     if (!directory.exists()) {
         if (!directory.mkpath(".")) {
             log("Can't create templates directory.");
@@ -257,7 +277,7 @@ void backend::captureWidget(QString widgetName) {
     QImage croppedImg = screenImg.copy(rectangle);
     QString filePath = directory.filePath(widgetName + ".png");
     if (croppedImg.save(filePath)) {
-        log(QString("Saved %1.png successfully").arg(widgetName));
+        log(QString("Saved %1.png successfully to %2").arg(widgetName).arg(filePath));
     } else {
         log(QString("Failed to save %1.png").arg(widgetName));
     }
@@ -306,5 +326,20 @@ QPoint backend::getPos(int x, int y, double width, double height, int mode, int 
     return QPoint(-1, -1);
 }
 
-
-
+void backend::initializeTemplates() {
+    QString localPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/templates";
+    QDir localDir(localPath);
+    if (!localDir.exists()) {
+        localDir.mkpath(".");
+    }
+    QDir defaultDir("./templates");
+    if (defaultDir.exists()) {
+        for (const QString &fileName : defaultDir.entryList(QDir::Files)) {
+            QString dest = localDir.filePath(fileName);
+            if (!QFile::exists(dest)) {
+                QFile::copy(defaultDir.filePath(fileName), dest);
+                log(QString("Copied default template %1 to local storage.").arg(fileName));
+            }
+        }
+    }
+}

@@ -42,7 +42,7 @@ void AdLoop::start() {
     } else {
         emit logMessage("Loop started.");
         state = 0;
-        timer->start(2000);
+        timer->start(3000);
     }
 }
 
@@ -110,7 +110,7 @@ QString AdLoop::solveCaptcha(QString imagePath) {
 QPoint AdLoop::findTemplate(QImage sourceTemplate, QString templateName) {
     QImage converted = sourceTemplate.convertToFormat(QImage::Format_RGB888);
     cv::Mat image(converted.height(), converted.width(), CV_8UC3, const_cast<uchar*>(converted.constBits()), converted.bytesPerLine());
-    QDir templatePath("./templates");
+    QDir templatePath(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/templates");
     QStringList filter;
     filter << QString("*%1*").arg(templateName);
     QFileInfoList files = templatePath.entryInfoList(filter, QDir::Files);
@@ -141,6 +141,7 @@ int AdLoop::checkState() {
     QPoint successScreen = findTemplate(screenImg, QString("successScreen"));
     QPoint adContinueScreen = findTemplate(screenImg, QString("adContinueScreen"));
     QPoint adWaitingScreen = findTemplate(screenImg, QString("adWaitingScreen"));
+    QPoint successScreen2 = findTemplate(screenImg, QString("successScreen2"));
 
     if (adContinueScreen.x() != -1) {
         return 5;
@@ -160,7 +161,7 @@ int AdLoop::checkState() {
         return 0;
     } else if (captchaTextboxLoc.x() != -1) {
         return 1;
-    } else if (successScreen.x() != -1) {
+    } else if (successScreen.x() != -1 || successScreen2.x() != -1) {
         return 4;
     }
     return 2;
@@ -219,4 +220,4 @@ void AdLoop::loop() {
     } else {
         emit logMessage("Undefined state");
     }
-}
+}

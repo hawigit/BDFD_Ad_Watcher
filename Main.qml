@@ -7,9 +7,9 @@ Window {
     width: 640
     height: 480
     visible: true
-    minimumWidth: 400
+    minimumWidth: 200
     minimumHeight: 100
-    title: "BDFD Ad Watcher v.4.0"
+    title: "BDFD Ad Watcher v.5.0"
     TabBar {
         id: bar
         width: parent.width
@@ -19,6 +19,12 @@ Window {
         }
         TabButton {
             text: qsTr("Configurations")
+        }
+        TabButton {
+            text: qsTr("Set Click Location")
+        }
+        TabButton {
+            text: qsTr("Set Template")
         }
     }
     StackLayout {
@@ -36,7 +42,7 @@ Window {
             height: parent.height
             Text {
                 id: title
-                text: "BDFD Ad watcher 4.0"
+                text: "BDFD Ad watcher 5.0"
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.pixelSize: Math.min(Math.max(12, parent.width * 0.1), 40)
             }
@@ -156,446 +162,621 @@ Window {
                 }
             }
         }
+        // Tab 1: Configurations Tab
         Rectangle {
             id: configurationsTab
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
+            anchors.fill: parent
+            anchors.margins: parentWindow.width * 0.02
 
-            anchors.topMargin: parent.height*0.05
-            anchors.leftMargin: parentWindow.width*0.01
-            anchors.rightMargin: parentWindow.width*0.01
-            Text {
-                id: configNote
-                text: "Connect to bluestacks before setting anything."
-                anchors.top: parent.top
-                anchors.left: parent.left
-                height: parent.height*0.015
-            }
-
-            Text {
-                id: adbTitle
-                anchors.top: configNote.bottom
-                anchors.topMargin: 5
-                anchors.left: parent.left
-                text: "Bluestacks Android Debug Bridge Port (example: 127.0.0.1:5555): "
-            }
-            TextField {
-                id: adbPortInput
-                anchors.left: adbTitle.right
-                anchors.verticalCenter: adbTitle.verticalCenter
-                text: backend.adbPort
-                onTextEdited: backend.updatePort(adbPortInput.text)
-            }
-            Rectangle {
-                id: config1
-                border.color: "black"
-                border.width: 5
-                height: parent.height*0.15
-                anchors.top: adbTitle.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.topMargin: parentWindow.height*0.01
-                anchors.leftMargin: parentWindow.width*0.01
-                anchors.rightMargin: parentWindow.width*0.01
-                RowLayout {
-                    width: parent.width
-                    height: parent.height
-                    anchors.margins: 10
-                    anchors.fill: parent
-                    spacing: 10
-                    Button {
-                        id: btnGetPos
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Get Position + Color"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 0
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                    Button {
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Capture Screen"
-                        onClicked: backend.captureScreen()
-                    }
-                }
-            }
-            Rectangle {
-                id: config2
-                border.color: "black"
-                border.width: 5
-                height: parent.height*0.15
-                anchors.top: config1.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.topMargin: parentWindow.height*0.01
-                anchors.leftMargin: parentWindow.width*0.01
-                anchors.rightMargin: parentWindow.width*0.01
-                RowLayout {
-                    width: parent.width
-                    height: parent.height
-                    anchors.margins: 10
-                    anchors.fill: parent
-                    spacing: 10
-                    Button {
-                        id: textInputAdButtonLocation
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Set Ad Button Location"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 3
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                    Button {
-                        id: getLocXButton1
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Set Main X button location"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 1
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                    Button {
-                        id:getLocXButton2
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Set X button 2 location"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 2
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                    Button {
-                        id:getAdContinueButton
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Set Ad Continue Button location"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 7
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                }
-            }
-            Rectangle {
-                id: config3
-                border.color: "black"
-                border.width: 5
-                height: parent.height*0.15
-                anchors.top: config2.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.topMargin: parentWindow.height*0.01
-                anchors.leftMargin: parentWindow.width*0.01
-                anchors.rightMargin: parentWindow.width*0.01
-                RowLayout {
-                    width: parent.width
-                    height: parent.height
-                    anchors.margins: 10
-                    anchors.fill: parent
-                    spacing: 10
-                    Button {
-                        id: getLocAdWatchButton
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Set Ad Watch Button location"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 3
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                    Button {
-                        id:getLocCaptchaTextBox
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Set Captcha Textbox location"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 4
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                    Button {
-                        id:getLocCaptchaConfirm
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Set Captcha Confirm Button location"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 5
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                    Button {
-                        id:getLocXButton1_left
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Set left X button location"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 5
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                }
-            }
-            Rectangle {
-                id: configSeparator
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: config3.bottom
-                height: parent.height*0.05
-                anchors.topMargin: parentWindow.height*0.01
-                border.width: 2
-                Text {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    text: "Capture Templates"
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignHCenter
-                }
-            }
-            Rectangle {
-                id: config4
-                border.color: "black"
-                border.width: 1
-                height: parent.height*0.1
-                anchors.top: configSeparator.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.topMargin: parentWindow.height*0.01
-                anchors.leftMargin: parentWindow.width*0.01
-                anchors.rightMargin: parentWindow.width*0.01
-                RowLayout {
-                    width: parent.width
-                    height: parent.height
-                    anchors.margins: 3
-                    anchors.fill: parent
-                    spacing: 10
-                    Button {
-                        id: captureAdWatchButton
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Capture Ad Watch Button"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 6
-                                       getPosScreen.widgetName = "adWatchButton"
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                    Button {
-                        id: captureXButton1
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Capture white-themed X button"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 6
-                                       getPosScreen.widgetName = "XButton1"
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                    Button {
-                        id: captureXButton1_black
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Capture dark-themed X button"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 6
-                                       getPosScreen.widgetName = "XButton1_black"
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                }
-            }
-            Rectangle {
-                id: config5
-                border.color: "black"
-                border.width: 1
-                height: parent.height*0.1
-                anchors.top: config4.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.leftMargin: parentWindow.width*0.01
-                anchors.rightMargin: parentWindow.width*0.01
-                RowLayout {
-                    width: parent.width
-                    height: parent.height
-                    anchors.margins: 3
-                    anchors.fill: parent
-                    spacing: 10
-                    Button {
-                        id: captureXButton1_skip
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Capture skip ad button"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 6
-                                       getPosScreen.widgetName = "XButton1_skip"
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                    Button {
-                        id: captureXButton2
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Capture popup X button"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 6
-                                       getPosScreen.widgetName = "XButton2"
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                    Button {
-                        id: captureCaptchaTextBox
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Capture captcha textbox"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 6
-                                       getPosScreen.widgetName = "captchaTextbox"
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                }
-            }
-            Rectangle {
-                id: config6
-                border.color: "black"
-                border.width: 1
-                height: parent.height*0.1
-                anchors.top: config5.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.leftMargin: parentWindow.width*0.01
-                anchors.rightMargin: parentWindow.width*0.01
-                RowLayout {
-                    width: parent.width
-                    height: parent.height
-                    anchors.margins: 3
-                    anchors.fill: parent
-                    spacing: 10
-                    Button {
-                        id: captureSuccessScreen
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Capture success message"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 6
-                                       getPosScreen.widgetName = "successScreen"
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                    Button {
-                        id: captureAdContinueScreen
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Capture ad continue screen"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 6
-                                       getPosScreen.widgetName = "adContinueScreen"
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                    Button {
-                        id: captureAdWaitingScreen
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        text: "Capture ad waiting screen"
-                        onClicked: () => {
-                                       backend.captureScreen()
-                                       getPosScreen.mode = 6
-                                       getPosScreen.widgetName = "adWaitingScreen"
-                                       getPosScreen.visible = true
-                                   }
-                    }
-                }
-            }
-            Rectangle {
-                id: getPosScreen
+            ColumnLayout {
                 anchors.fill: parent
-                visible: false
-                property string widgetName: "placeholder"
-                property int clickCount: 1
-                property int mode: 0
-                Image {
-                    id: getPosImg
-                    source: backend.imgPath
-                    anchors.fill: parent
-                    MouseArea {
+                spacing: 15
+
+                Text {
+                    text: "General Configurations"
+                    font.pixelSize: 18
+                    font.bold: true
+                }
+
+                Text {
+                    text: "Connect to BlueStacks before configuring or capturing anything."
+                    color: "#555555"
+                    font.pixelSize: 13
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 60
+                    border.color: "#cccccc"
+                    border.width: 1
+                    radius: 4
+
+                    RowLayout {
                         anchors.fill: parent
-                        onClicked: (mouse) => {
-                                        if (getPosScreen.mode == 0) {
-                                            backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 0)
-                                            getPosScreen.visible = false
-                                        } else if (getPosScreen.mode == 1) {
-                                            backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 1)
-                                            getPosScreen.visible = false
-                                        } else if (getPosScreen.mode == 2) {
-                                            backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 2)
-                                            getPosScreen.visible = false
-                                        } else if (getPosScreen.mode == 3) {
-                                            backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 3)
-                                            getPosScreen.visible = false
-                                        } else if (getPosScreen.mode == 4) {
-                                            backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 4)
-                                            getPosScreen.visible = false
-                                        } else if (getPosScreen.mode == 5) {
-                                            backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 5)
-                                            getPosScreen.visible = false
-                                        } else if (getPosScreen.mode == 6) {
-                                            if (getPosScreen.clickCount <2) {
-                                               backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 6, getPosScreen.clickCount)
-                                               getPosScreen.clickCount+=1
-                                           } else {
-                                               backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 6, getPosScreen.clickCount, getPosScreen.widgetName)
-                                               getPosScreen.clickCount = 1
-                                               getPosScreen.widgetName = "placeholder"
-                                               getPosScreen.visible = false
-                                           }
-                                        } else if (getPosScreen.mode == 7) {
-                                            backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 7)
-                                            getPosScreen.visible = false
-                                        } else if (getPosScreen.mode == 8) {
-                                            backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 8)
-                                            getPosScreen.visible = false
-                                        }
-                                   }
+                        anchors.margins: 10
+                        spacing: 10
+
+                        Text {
+                            text: "BlueStacks ADB Port:"
+                            font.bold: true
+                            font.pixelSize: 14
+                        }
+
+                        TextField {
+                            id: adbPortInput
+                            Layout.fillWidth: true
+                            text: backend.adbPort
+                            placeholderText: "127.0.0.1:5555"
+                            onTextEdited: backend.updatePort(adbPortInput.text)
+                        }
                     }
                 }
-                Button {
-                    id: getPosCancel
-                    text: "Cancel"
-                    anchors.bottom: parent.bottom
-                    anchors.right: parent.right
-                    height: parent.height * 0.05
-                    width: parent.width * 0.1
-                    onClicked: () => {
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 70
+                    border.color: "#cccccc"
+                    border.width: 1
+                    radius: 4
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 10
+                        spacing: 10
+
+                        Button {
+                            id: btnGetPos
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            contentItem: Text {
+                                text: "Get Position + Color"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 0
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            contentItem: Text {
+                                text: "Capture Screen"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: backend.captureScreen()
+                        }
+                    }
+                }
+
+                Item {
+                    Layout.fillHeight: true // Spacing filler
+                }
+            }
+        }
+
+        // Tab 2: Set Click Location Tab
+        Rectangle {
+            id: clickLocationTab
+            anchors.fill: parent
+            anchors.margins: parentWindow.width * 0.02
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 10
+
+                Text {
+                    text: "Set Click Locations (1 Click)"
+                    font.pixelSize: 18
+                    font.bold: true
+                }
+
+                Text {
+                    text: "Click a button below, then make a single click on the emulator preview to set that coordinate."
+                    color: "#555555"
+                    font.pixelSize: 13
+                }
+
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    clip: true
+
+                    GridLayout {
+                        width: parent.width
+                        columns: 2
+                        columnSpacing: 10
+                        rowSpacing: 10
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 50
+                            contentItem: Text {
+                                text: "Set Ad Watch Button location"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 3
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 50
+                            contentItem: Text {
+                                text: "Set Main X button location"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 1
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 50
+                            contentItem: Text {
+                                text: "Set Left X button location"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 8
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 50
+                            contentItem: Text {
+                                text: "Set X button 2 location"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 2
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 50
+                            contentItem: Text {
+                                text: "Set Ad Continue Button location"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 7
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 50
+                            contentItem: Text {
+                                text: "Set Captcha Textbox location"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 4
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 50
+                            contentItem: Text {
+                                text: "Set Captcha Confirm Button location"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 5
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 50
+                            contentItem: Text {
+                                text: "Capture Screen (Refresh Preview)"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: backend.captureScreen()
+                        }
+                    }
+                }
+            }
+        }
+
+        // Tab 3: Set Template Tab
+        Rectangle {
+            id: templateTab
+            anchors.fill: parent
+            anchors.margins: parentWindow.width * 0.02
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 10
+
+                Text {
+                    text: "Set Templates (2 Clicks)"
+                    font.pixelSize: 18
+                    font.bold: true
+                }
+
+                Text {
+                    text: "Click a button below, then make 2 clicks (Top-Left, then Bottom-Right) on the preview to crop."
+                    color: "#555555"
+                    font.pixelSize: 13
+                }
+
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    clip: true
+
+                    GridLayout {
+                        width: parent.width
+                        columns: 2
+                        columnSpacing: 10
+                        rowSpacing: 10
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 45
+                            contentItem: Text {
+                                text: "Capture Ad Watch Button"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 6
+                                getPosScreen.widgetName = "adWatchButton"
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 45
+                            contentItem: Text {
+                                text: "Capture white-themed X button"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 6
+                                getPosScreen.widgetName = "XButton1"
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 45
+                            contentItem: Text {
+                                text: "Capture dark-themed X button"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 6
+                                getPosScreen.widgetName = "XButton1_black"
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 45
+                            contentItem: Text {
+                                text: "Capture skip ad button"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 6
+                                getPosScreen.widgetName = "XButton1_skip"
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 45
+                            contentItem: Text {
+                                text: "Capture popup X button"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 6
+                                getPosScreen.widgetName = "XButton2"
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 45
+                            contentItem: Text {
+                                text: "Capture captcha textbox"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 6
+                                getPosScreen.widgetName = "captchaTextbox"
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 45
+                            contentItem: Text {
+                                text: "Capture success message"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 6
+                                getPosScreen.widgetName = "successScreen"
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 45
+                            contentItem: Text {
+                                text: "Capture success message (v2)"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 6
+                                getPosScreen.widgetName = "successScreen2"
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 45
+                            contentItem: Text {
+                                text: "Capture ad continue screen"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 6
+                                getPosScreen.widgetName = "adContinueScreen"
+                                getPosScreen.visible = true
+                            }
+                        }
+
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 45
+                            contentItem: Text {
+                                text: "Capture ad waiting screen"
+                                wrapMode: Text.WordWrap
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                            }
+                            onClicked: () => {
+                                backend.captureScreen()
+                                getPosScreen.mode = 6
+                                getPosScreen.widgetName = "adWaitingScreen"
+                                getPosScreen.visible = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Shared Screen Picker Overlay
+    Rectangle {
+        id: getPosScreen
+        anchors.fill: parent
+        visible: false
+        z: 50
+        property string widgetName: "placeholder"
+        property int clickCount: 1
+        property int mode: 0
+        property int savedWidth: 640
+        property int savedHeight: 480
+
+        function adjustWindowRatio() {
+            if (getPosImg.sourceSize.width > 0 && getPosImg.sourceSize.height > 0) {
+                let ratio = getPosImg.sourceSize.width / getPosImg.sourceSize.height;
+                let targetWidth = Math.round(parentWindow.height * ratio);
+                if (targetWidth >= parentWindow.minimumWidth) {
+                    parentWindow.width = targetWidth;
+                } else {
+                    parentWindow.width = parentWindow.minimumWidth;
+                    parentWindow.height = Math.round(parentWindow.minimumWidth / ratio);
+                }
+            }
+        }
+
+        onVisibleChanged: {
+            if (visible) {
+                savedWidth = parentWindow.width;
+                savedHeight = parentWindow.height;
+                adjustWindowRatio();
+            } else {
+                parentWindow.width = savedWidth;
+                parentWindow.height = savedHeight;
+            }
+        }
+
+        Image {
+            id: getPosImg
+            source: backend.imgPath
+            anchors.fill: parent
+
+            onStatusChanged: {
+                if (status === Image.Ready && getPosScreen.visible) {
+                    getPosScreen.adjustWindowRatio();
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: (mouse) => {
+                    if (getPosScreen.mode == 0) {
+                        backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 0)
                         getPosScreen.visible = false
-                        getPosScreen.clickCount = 1
-                        getPosScreen.widgetName = "placeholder"
+                    } else if (getPosScreen.mode == 1) {
+                        backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 1)
+                        getPosScreen.visible = false
+                    } else if (getPosScreen.mode == 2) {
+                        backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 2)
+                        getPosScreen.visible = false
+                    } else if (getPosScreen.mode == 3) {
+                        backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 3)
+                        getPosScreen.visible = false
+                    } else if (getPosScreen.mode == 4) {
+                        backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 4)
+                        getPosScreen.visible = false
+                    } else if (getPosScreen.mode == 5) {
+                        backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 5)
+                        getPosScreen.visible = false
+                    } else if (getPosScreen.mode == 6) {
+                        if (getPosScreen.clickCount < 2) {
+                            backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 6, getPosScreen.clickCount)
+                            getPosScreen.clickCount += 1
+                        } else {
+                            backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 6, getPosScreen.clickCount, getPosScreen.widgetName)
+                            getPosScreen.clickCount = 1
+                            getPosScreen.widgetName = "placeholder"
+                            getPosScreen.visible = false
+                        }
+                    } else if (getPosScreen.mode == 7) {
+                        backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 7)
+                        getPosScreen.visible = false
+                    } else if (getPosScreen.mode == 8) {
+                        backend.getPos(mouse.x, mouse.y, parent.width, parent.height, 8)
+                        getPosScreen.visible = false
                     }
                 }
+            }
+        }
+
+        Button {
+            id: getPosCancel
+            text: "Cancel"
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.margins: 15
+            height: 40
+            width: 100
+            onClicked: () => {
+                getPosScreen.visible = false
+                getPosScreen.clickCount = 1
+                getPosScreen.widgetName = "placeholder"
+            }
+        }
+    }
+
+    Rectangle {
+        id: loadingOverlay
+        anchors.fill: parent
+        color: "#f5f5f5"
+        visible: !backend.isReady
+        z: 999
+
+        ColumnLayout {
+            anchors.centerIn: parent
+            spacing: 20
+
+            BusyIndicator {
+                running: !backend.isReady
+                Layout.alignment: Qt.AlignHCenter
+            }
+
+            Text {
+                text: "Initializing OCR server..."
+                font.pixelSize: 16
+                font.bold: true
+                color: "#333333"
+                Layout.alignment: Qt.AlignHCenter
             }
         }
     }
