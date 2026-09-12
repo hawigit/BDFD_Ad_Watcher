@@ -27,7 +27,7 @@ So I made this macro that watches the ad for me 😀.
 5. To stop the program, click **Stop**.
 
 ## How to Configure Settings
-The app includes a configuration tab to map button coordinates if your Bluestacks screen layout differs from the default template.
+The app includes configuration tabs to map button coordinates and change templates if your Bluestacks screen layout / BDFD UI differs from the default template.
 
 ![Configuration Tab Screenshot](Readme_asset/Config_Tab.png)
 
