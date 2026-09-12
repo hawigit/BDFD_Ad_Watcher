@@ -9,8 +9,8 @@ So I made this macro that watches the ad for me 😀.
 * Uses **Bluestacks** emulator (running the BDFD app downloaded from Google Play Store).
 
 ## Installation
-1. Go to [BDFD Ad Watcher v4.1](https://github.com/phivogit/BDFD_Ad_Watcher/releases/tag/v4.1) and download the `.exe` file.
-2. Run the executable.
+1. Go to [BDFD Ad Watcher v5.0](https://github.com/phivogit/BDFD_Ad_Watcher/releases/latest) and download the `.exe` file.
+2. Run the file, follow the setup wizard to complete setting up the app.
 3. In Bluestacks, go to **Settings** > **Advanced** and enable **Android Debug Bridge (ADB)** to allow connecting to Android.
 
 ![Bluestacks ADB Settings](Readme_asset/BluestacksConfig.png)
@@ -20,11 +20,9 @@ So I made this macro that watches the ad for me 😀.
 > * **Permissions**: On the very first run, Bluestacks will ask for USB debugging permission. Make sure to check **"Always allow from this computer"** so the app can connect silently in the future.
 
 ## Usage
-1. Open Bluestacks.
-2. Open BDFD app.
-3. Click on your bot.
-4. Make sure you don't scroll down, go to BDFD Ad Watcher, click **Connect to bluestacks**, then click **Start**.
-5. To stop the program, click **Stop**.
+1. Open Bluestacks, open BDFD app, click on your bot.
+3. Make sure you don't scroll down, go to BDFD Ad Watcher app, click **Connect to bluestacks**, then click **Start**.
+4. To stop the program, click **Stop**.
 
 ## How to Configure Settings
 The app includes configuration tabs to map button coordinates and change templates if your Bluestacks screen layout / BDFD UI differs from the default template.
